@@ -213,27 +213,8 @@ void MainWindow::refresh_status(const QString &traffic_update) {
         return tt.join(isTray ? "\n" : " ");
     };
 
-    auto icon_status_new = Icon::TrayIconStatus::None;
-
-    if (running != nullptr) {
-        if (settings->spmode_vpn) {
-            icon_status_new = Icon::TrayIconStatus::Vpn;
-        } else if (settings->spmode_system_proxy) {
-            icon_status_new = Icon::TrayIconStatus::SystemProxy;
-        } else {
-            icon_status_new = Icon::TrayIconStatus::Running;
-        }
-    }
-
     setWindowTitle(make_title(false));
-    if (icon_status_new != icon_status) QApplication::setWindowIcon(GetTaskbarIcon(icon_status_new));
-
-    if (tray != nullptr) {
-        tray->setToolTip(make_title(true));
-        if (icon_status_new != icon_status) tray->setIcon(Icon::GetTrayIcon(icon_status_new));
-    }
-
-    icon_status = icon_status_new;
+    if (tray != nullptr) tray->setToolTip(make_title(true));
 
     refresh_startstop_button();
 }
@@ -272,6 +253,30 @@ void MainWindow::refresh_startstop_button() {
         }
     }
     btn->setLock(lock);
+
+    if (trayConnectAction != nullptr) {
+        if (m_profileConnecting) {
+            trayConnectAction->setText(tr("Connecting"));
+        } else if (m_profileDisconnecting) {
+            trayConnectAction->setText(tr("Disconnecting"));
+        } else {
+            trayConnectAction->setText(running != nullptr ? tr("Disconnect") : tr("Connect"));
+        }
+        trayConnectAction->setEnabled(!m_profileConnecting && !m_profileDisconnecting &&
+                                      (running != nullptr || get_profile_to_start() >= 0));
+    }
+
+    // Here rather than in refresh_status(): the connecting/disconnecting flags only ever refresh this button.
+    auto iconStatus = Icon::TrayIconStatus::None;
+    if (m_profileConnecting || m_profileDisconnecting) iconStatus = Icon::TrayIconStatus::Connecting;
+    else if (mode == StartStopButton::Mode::Tun) iconStatus = Icon::TrayIconStatus::Vpn;
+    else if (mode == StartStopButton::Mode::SystemProxy) iconStatus = Icon::TrayIconStatus::SystemProxy;
+    else if (mode == StartStopButton::Mode::Core) iconStatus = Icon::TrayIconStatus::Running;
+    if (iconStatus != icon_status) {
+        QApplication::setWindowIcon(GetTaskbarIcon(iconStatus));
+        if (tray != nullptr) tray->setIcon(Icon::GetTrayIcon(iconStatus));
+        icon_status = iconStatus;
+    }
 }
 
 void MainWindow::update_traffic_graph(int proxyDl, int proxyUp, int directDl, int directUp)

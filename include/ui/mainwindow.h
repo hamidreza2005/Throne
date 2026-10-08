@@ -263,6 +263,7 @@ private:
     ProfilesFilterProxyModel *profilesFilterModel = nullptr;
     TrayIcon *tray;
     QMenu *trayMenu = nullptr;
+    QAction *trayConnectAction = nullptr;
     QPointer<TrayProfileSelector> traySelector;
     void openTraySelector(bool routing);
     QPointer<TrayOtpCodes> trayOtpCodes;

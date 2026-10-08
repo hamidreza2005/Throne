@@ -8030,6 +8030,18 @@ Improves hole-punching reliability. Requires IPv4.</source>
 <context>
     <name>MainWindow</name>
     <message>
+        <source>Connect</source>
+        <translation>连接</translation>
+    </message>
+    <message>
+        <source>Disconnect</source>
+        <translation>断开连接</translation>
+    </message>
+    <message>
+        <source>Disconnecting</source>
+        <translation>正在断开</translation>
+    </message>
+    <message>
         <source>Filter logs</source>
         <translation>筛选日志</translation>
     </message>
