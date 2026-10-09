@@ -153,12 +153,7 @@ void MainWindow::openTraySelector(bool routing) {
     TrayProfileSelector::Callbacks cb;
     cb.startProfile = [this](int id) { profile_start(id); };
     cb.stopProfile = [this]() { profile_stop(false, false, true); };
-    cb.chooseRoute = [this](int id) {
-        if (Configs::dataManager->settingsRepo->current_route_id == id) return;
-        Configs::dataManager->settingsRepo->current_route_id = id;
-        Configs::dataManager->settingsRepo->Save();
-        if (Configs::dataManager->settingsRepo->started_id >= 0) profile_start(Configs::dataManager->settingsRepo->started_id);
-    };
+    cb.chooseRoute = [this](int id) { choose_route(id); };
     cb.isRunning = [this]() { return running != nullptr; };
     cb.runningId = [this]() { return running ? running->id : -1; };
     cb.runningGid = [this]() { return running ? running->gid : -1; };

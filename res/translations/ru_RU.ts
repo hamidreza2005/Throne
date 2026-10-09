@@ -2225,7 +2225,7 @@ Throne will restart to complete the restore.</source>
     </message>
 </context>
 <context>
-    <name>DialogHotkey</name>
+    <name>DialogIntegration</name>
     <message>
         <source>Hotkey</source>
         <translation>Горячие клавиши</translation>

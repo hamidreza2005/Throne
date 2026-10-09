@@ -771,7 +771,7 @@ QToolButton::menu-indicator {
     <addaction name="menu_routing_settings"/>
     <addaction name="menu_vpn_settings"/>
     <addaction name="menu_preset_settings"/>
-    <addaction name="menu_hotkey_settings"/>
+    <addaction name="menu_integration_settings"/>
     <addaction name="menu_open_config_folder"/>
    </widget>
    <widget class="QMenu" name="menu_server">
@@ -1097,9 +1097,9 @@ QToolButton::menu-indicator {
     <string notr="true">Ctrl+Shift+F</string>
    </property>
   </action>
-  <action name="menu_hotkey_settings">
+  <action name="menu_integration_settings">
    <property name="text">
-    <string>Hotkey Settings</string>
+    <string>Integration Settings</string>
    </property>
   </action>
   <action name="menu_select_all">

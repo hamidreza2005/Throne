@@ -2631,44 +2631,44 @@ Throne will restart to complete the restore.</source>
     </message>
 </context>
 <context>
-    <name>DialogHotkey</name>
+    <name>DialogIntegration</name>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="14"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="14"/>
         <source>Hotkey</source>
         <translation>热键</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="24"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="24"/>
         <source>Global</source>
         <translation>全局</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="30"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="30"/>
         <source>Trigger main window</source>
         <translation>显示/隐藏主窗口</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="43"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="43"/>
         <source>Show groups</source>
         <translation>显示分组</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="56"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="56"/>
         <source>Show routes</source>
         <translation>显示路由</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="69"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="69"/>
         <source>Proxy mode</source>
         <translation>代理模式</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="82"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="82"/>
         <source>Toggle System Proxy</source>
         <translation>切换系统代理</translation>
     </message>
     <message>
-        <location filename="Throne-1.3.1/include/ui/setting/dialog_hotkey.ui" line="96"/>
+        <location filename="Throne-1.3.1/include/ui/setting/dialog_integration.ui" line="96"/>
         <source>Shortcuts</source>
         <translation>快捷键</translation>
     </message>

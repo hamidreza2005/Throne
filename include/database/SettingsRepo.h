@@ -169,6 +169,14 @@ namespace Configs {
         bool use_mozilla_certs = false;
         bool kill_switch = false;
 
+        // Remote API
+        bool remote_api_enable = false;
+        bool remote_api_lan = false;
+        int remote_api_port = 9095;
+        QString remote_api_key = "";
+        // CIDRs separated by commas or whitespace; empty allows every LAN address.
+        QString remote_api_allow = "";
+
         // Remember
         bool remember_system_proxy = false;
         bool remember_tun = false;
@@ -272,6 +280,8 @@ namespace Configs {
         QString hotkey_route = "";
         QString hotkey_system_proxy_menu = "";
         QString hotkey_toggle_system_proxy = "";
+        QString hotkey_toggle_connection = "";
+        QString hotkey_toggle_tun = "";
 
         // Core
         int core_box_clash_api = -9090;

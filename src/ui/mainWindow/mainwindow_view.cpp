@@ -220,6 +220,12 @@ void MainWindow::refresh_status(const QString &traffic_update) {
 }
 
 void MainWindow::refresh_startstop_button() {
+    // Every change to the start/stop flags or `running` is followed by a call here, on the UI thread.
+    if (const auto connState = connection_state(); connState != m_lastConnectionState) {
+        m_lastConnectionState = connState;
+        emit connection_state_changed(connState);
+    }
+
     auto *btn = ui->toolButton_startstop;
     if (btn == nullptr) return;
 
@@ -281,6 +287,8 @@ void MainWindow::refresh_startstop_button() {
 
 void MainWindow::update_traffic_graph(int proxyDl, int proxyUp, int directDl, int directUp)
 {
+    m_liveRates = LiveRates{.proxyUp = proxyUp, .proxyDown = proxyDl, .directUp = directUp, .directDown = directDl};
+    m_liveRatesAt.start();
     if (speedChartWidget) {
         QMap<SpeedWidget::GraphType, long> pointData;
         pointData[SpeedWidget::OUTBOUND_PROXY_UP] = proxyUp;

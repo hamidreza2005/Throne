@@ -918,7 +918,7 @@ Release note:
     </message>
 </context>
 <context>
-    <name>DialogHotkey</name>
+    <name>DialogIntegration</name>
     <message>
         <source>Hotkey</source>
         <translation>کلید میانبر</translation>

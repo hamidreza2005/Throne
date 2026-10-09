@@ -75,6 +75,7 @@ namespace MwArg {
     inline const QString ProfileListDisplay = QStringLiteral("profileListDisplay");
     inline const QString KillSwitch   = QStringLiteral("killSwitch");
     inline const QString LogFont      = QStringLiteral("logFont");
+    inline const QString RemoteApi    = QStringLiteral("remoteApi");
     // ProfileChanged arg.
     inline const QString RestartProxy = QStringLiteral("restartProxy");
     // SubscriptionFinished arg.
