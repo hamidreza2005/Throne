@@ -417,6 +417,8 @@ private:
     bool m_logFollow = true;
     QRegularExpression m_logSearch;
     QTimer *m_logSearchDebounce = nullptr;
+    QToolButton *logFilterButton = nullptr;
+    QToolButton *logJumpLatestButton = nullptr;
 
     struct LogFilter {
         bool enableInclude = false;
@@ -444,6 +446,8 @@ private:
     void rebuildLogView();
 
     void applyLogSearch();
+
+    void setLogFilterVisible(bool visible);
 
     void updateLogStatus();
 

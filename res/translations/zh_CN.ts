@@ -381,16 +381,16 @@ It stays a preference, not a lock: if that profile stops working the selector st
 <context>
     <name>DialogBasicSettings</name>
     <message>
-        <source>Monospace Font</source>
-        <translation>等宽字体</translation>
+        <source>Log Browser Font</source>
+        <translation>日志浏览器字体</translation>
     </message>
     <message>
-        <source>Monospace Font Size</source>
-        <translation>等宽字体大小</translation>
+        <source>Log Browser Font Size</source>
+        <translation>日志浏览器字体大小</translation>
     </message>
     <message>
-        <source>Monospace font for the log view. Unavailable families fall back to a built-in monospace list.</source>
-        <translation>日志视图使用的等宽字体。所选字体不可用时，将按内置的等宽字体列表依次回退。</translation>
+        <source>Only monospaced fonts are listed. An unavailable family falls back to a built-in monospace list.</source>
+        <translation>仅列出等宽字体。所选字体不可用时，将按内置的等宽字体列表依次回退。</translation>
     </message>
     <message>
         <location filename="Throne-1.3.1/include/ui/setting/dialog_basic_settings.ui" line="20"/>
@@ -8040,6 +8040,10 @@ Improves hole-punching reliability. Requires IPv4.</source>
     <message>
         <source>Disconnecting</source>
         <translation>正在断开</translation>
+    </message>
+    <message>
+        <source>Disable Filter</source>
+        <translation>禁用筛选</translation>
     </message>
     <message>
         <source>Filter logs</source>

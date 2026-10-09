@@ -92,7 +92,19 @@ void MainWindow::setupLogView() {
         if (m_logFollow) bar->setValue(max);
     });
 
-    connect(ui->logJumpLatest, &QToolButton::clicked, this, [this] { releaseHeldLogs(); });
+    // Both sit in the stats tab corner, which setupConnectionFilter() builds.
+    logJumpLatestButton = new QToolButton(this);
+    logJumpLatestButton->setToolTip(tr("New logs are held while the view is scrolled up"));
+    connect(logJumpLatestButton, &QToolButton::clicked, this, [this] { releaseHeldLogs(); });
+    logFilterButton = new QToolButton(this);
+    logFilterButton->setIcon(QIcon(":/icon/filter.png"));
+    logFilterButton->setCheckable(true);
+    connect(logFilterButton, &QToolButton::toggled, this, &MainWindow::setLogFilterVisible);
+    auto *closeFilter = new QAction(ui->logToolbar);
+    closeFilter->setShortcut(Qt::Key_Escape);
+    closeFilter->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    ui->logToolbar->addAction(closeFilter);
+    connect(closeFilter, &QAction::triggered, logFilterButton, [this] { logFilterButton->setChecked(false); });
 
     m_logSearchDebounce = new QTimer(this);
     m_logSearchDebounce->setSingleShot(true);
@@ -101,6 +113,7 @@ void MainWindow::setupLogView() {
     connect(ui->logSearchEdit, &QLineEdit::textChanged, m_logSearchDebounce, qOverload<>(&QTimer::start));
     connect(ui->logSearchCase, &QToolButton::toggled, this, [this] { applyLogSearch(); });
     connect(ui->logSearchRegex, &QToolButton::toggled, this, [this] { applyLogSearch(); });
+    setLogFilterVisible(false);
     updateLogStatus();
 }
 
@@ -264,6 +277,19 @@ void MainWindow::applyLogSearch() {
     rebuildLogView();
 }
 
+void MainWindow::setLogFilterVisible(bool visible) {
+    ui->logToolbar->setVisible(visible);
+    logFilterButton->setToolTip(visible ? tr("Disable Filter") : tr("Enable Filter"));
+    if (visible) {
+        ui->logSearchEdit->setFocus(Qt::OtherFocusReason);
+        return;
+    }
+    // A hidden bar must not keep filtering.
+    ui->logSearchEdit->clear();
+    m_logSearchDebounce->stop();
+    applyLogSearch();
+}
+
 void MainWindow::updateLogStatus() {
     if (m_logSearch.pattern().isEmpty()) {
         ui->logMatchCount->clear();
@@ -271,8 +297,8 @@ void MainWindow::updateLogStatus() {
         const auto matched = std::count_if(m_logLines.begin(), m_logLines.end(), [](const LogLine &line) { return line.visible; });
         ui->logMatchCount->setText(QStringLiteral("%1 / %2").arg(matched).arg(m_logLines.size()));
     }
-    ui->logJumpLatest->setVisible(!m_logFollow);
-    ui->logJumpLatest->setText(m_logHeld.empty() ? tr("Jump to latest") : tr("Jump to latest (%1 new)").arg(m_logHeld.size()));
+    logJumpLatestButton->setVisible(!m_logFollow);
+    logJumpLatestButton->setText(m_logHeld.empty() ? tr("Jump to latest") : tr("Jump to latest (%1 new)").arg(m_logHeld.size()));
 }
 
 bool MainWindow::should_print_log(const QString &log, const LogFilter &filter) {

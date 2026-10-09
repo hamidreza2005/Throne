@@ -583,19 +583,6 @@ QToolButton::menu-indicator {
                   <item>
                    <widget class="QLabel" name="logMatchCount"/>
                   </item>
-                  <item>
-                   <widget class="QToolButton" name="logJumpLatest">
-                    <property name="toolTip">
-                     <string>New logs are held while the view is scrolled up</string>
-                    </property>
-                    <property name="text">
-                     <string>Jump to latest</string>
-                    </property>
-                    <property name="toolButtonStyle">
-                     <enum>Qt::ToolButtonStyle::ToolButtonTextOnly</enum>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </widget>
                </item>
