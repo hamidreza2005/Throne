@@ -157,6 +157,40 @@ void MainWindow::prepare_exit()
 }
 
 void MainWindow::on_menu_exit_triggered() {
+    const bool restart = exit_reason == ExitReason::Restart || exit_reason == ExitReason::RestartWithTun ||
+                         exit_reason == ExitReason::RestartElevated;
+    const auto program = QApplication::applicationFilePath();
+    QStringList arguments;
+    if (restart) {
+        arguments = Configs::dataManager->settingsRepo->argv;
+        if (arguments.length() > 0) {
+            arguments.removeFirst();
+            arguments.removeAll("-tray");
+            arguments.removeAll("-flag_restart_tun_on");
+        }
+        if (exit_reason == ExitReason::RestartWithTun) arguments << "-flag_restart_tun_on";
+    }
+
+    bool relaunched = false;
+#ifdef Q_OS_WIN
+    if (exit_reason == ExitReason::RestartWithTun || exit_reason == ExitReason::RestartElevated) {
+        // Asked before the teardown so a declined UAC prompt leaves this instance running; the new one waits for this pid to exit.
+        // The UAC wait pumps messages with the UI still live, so a second exit request must not launch a second instance.
+        static bool elevating = false;
+        if (elevating) return;
+        elevating = true;
+        const auto elevatedArguments = arguments + QStringList{QString("-wait_pid=%1").arg(QCoreApplication::applicationPid())};
+        const bool launched = WinCommander::runProcessElevated(program, elevatedArguments, QApplication::applicationDirPath(), 1, false) == 0;
+        elevating = false;
+        if (!launched) {
+            exit_reason = ExitReason::None;
+            MW_show_log(tr("Restart as administrator was cancelled, Throne keeps running"));
+            return;
+        }
+        relaunched = true;
+    }
+#endif
+
     prepare_exit();
     if (exit_reason == ExitReason::RunUpdater) {
         QDir::setCurrent(QApplication::applicationDirPath());
@@ -166,28 +200,9 @@ void MainWindow::on_menu_exit_triggered() {
 #else
         QProcess::startDetached("./updater", QStringList{});
 #endif
-    } else if (exit_reason == ExitReason::Restart || exit_reason == ExitReason::RestartWithTun ||
-               exit_reason == ExitReason::RestartElevated) {
+    } else if (restart && !relaunched) {
         QDir::setCurrent(QApplication::applicationDirPath());
-
-        auto arguments = Configs::dataManager->settingsRepo->argv;
-        if (arguments.length() > 0) {
-            arguments.removeFirst();
-            arguments.removeAll("-tray");
-            arguments.removeAll("-flag_restart_tun_on");
-        }
-        auto program = QApplication::applicationFilePath();
-
-        if (exit_reason == ExitReason::RestartWithTun) arguments << "-flag_restart_tun_on";
-        if (exit_reason == ExitReason::Restart) {
-            QProcess::startDetached(program, arguments);
-        } else {
-#ifdef Q_OS_WIN
-            WinCommander::runProcessElevated(program, arguments, "", 1, false);
-#else
-            QProcess::startDetached(program, arguments);
-#endif
-        }
+        QProcess::startDetached(program, arguments);
     }
     QCoreApplication::quit();
 }
@@ -450,8 +465,11 @@ void MainWindow::show_kill_switch_problem() {
             return;
         }
 #ifdef Q_OS_WIN
-        exit_reason = ExitReason::RestartElevated;
-        on_menu_exit_triggered();
+        // Queued: ShellExecuteEx's UAC pump runs this box's deleteLater, so exiting from here frees it under QMessageBox (#1961).
+        QMetaObject::invokeMethod(this, [this] {
+            exit_reason = ExitReason::RestartElevated;
+            on_menu_exit_triggered();
+        }, Qt::QueuedConnection);
 #else
         // Otherwise the core restarts once it is privileged, and CoreStarted retries.
         if (get_elevated_permissions()) Sys::KillSwitch::instance()->apply();

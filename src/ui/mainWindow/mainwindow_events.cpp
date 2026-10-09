@@ -4,6 +4,7 @@
 #include <QCursor>
 #include <QLineEdit>
 #include <QMimeData>
+#include <QResizeEvent>
 #include <QTimer>
 
 #include "include/ui/widget/TrayOtpCodes.hpp"
@@ -102,11 +103,6 @@ void MainWindow::syncConnectionViewState() {
     Stats::connection_lister->SetInView(inView);
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event) {
-    QMainWindow::resizeEvent(event);
-    scheduleProxyListRefresh();
-}
-
 void MainWindow::scheduleProxyListRefresh() {
     constexpr int proxyListRefreshDebounceMs = 200;
     if (m_proxyListRefreshDebounce) m_proxyListRefreshDebounce->start(proxyListRefreshDebounceMs);
@@ -188,6 +184,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
         if (h > 0 && ui->toolButton_startstop->height() != h) {
             ui->toolButton_startstop->setFixedSize(h, h);
         }
+    }
+    // The viewport, not the window: splitter moves and scrollbar toggles change its width too.
+    if (type == QEvent::Resize && obj == ui->profilesTableView->viewport()) {
+        const auto *resize = static_cast<QResizeEvent *>(event);
+        if (resize->size().width() != resize->oldSize().width()) refresh_proxy_list_column_size();
     }
     if (type == QEvent::MouseButtonPress) {
         auto mouseEvent = dynamic_cast<QMouseEvent *>(event);

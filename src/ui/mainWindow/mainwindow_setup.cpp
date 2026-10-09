@@ -483,7 +483,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     });
     connect(ui->profilesTableView->horizontalHeader(), &QHeaderView::sectionResized, this, [=, this](int, int, int) {
         auto group = Configs::dataManager->groupsRepo->CurrentGroup();
-        if (Configs::dataManager->settingsRepo->refreshing_group || group == nullptr) return;
+        if (m_adjustingColumns || Configs::dataManager->settingsRepo->refreshing_group || group == nullptr) return;
         group->column_width.clear();
         for (int i = 0; i < ui->profilesTableView->horizontalHeader()->count(); i++) {
             group->column_width.push_back(ui->profilesTableView->horizontalHeader()->sectionSize(i));
@@ -677,6 +677,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         if (!ui->profilesTableView->isVisible()) return;
         refresh_proxy_list_column_size();
     });
+    ui->profilesTableView->viewport()->installEventFilter(this);
 
     auto *filterHeader = static_cast<ProfilesTableFilterHeader*>(ui->profilesTableView->horizontalHeader());
     filterHeader->setLastFilterColumn(Configs::dataManager->settingsRepo->last_filter_column);

@@ -311,7 +311,7 @@ void MainWindow::refresh_proxy_list_column_size() {
         m_adjustingColumns = true;
         QScrollBar *vBar = ui->profilesTableView->verticalScrollBar();
         const bool vBarBlocked = vBar->blockSignals(true);
-        hHeader->blockSignals(true);
+        // Header signals stay live: QTableView repaints its cells from sectionResized.
         constexpr int columnCount = ProfilesTableModel::ColumnCount;
         if (!group->column_width.isEmpty() && group->column_width.size() != columnCount) {
             group->column_width.clear();
@@ -348,7 +348,6 @@ void MainWindow::refresh_proxy_list_column_size() {
             ui->profilesTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         }
         hHeader->adjustPositions();
-        hHeader->blockSignals(false);
         vBar->blockSignals(vBarBlocked);
         m_adjustingColumns = false;
     });

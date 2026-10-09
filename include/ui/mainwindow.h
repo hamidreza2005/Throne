@@ -515,8 +515,6 @@ private:
 
     void hideEvent(QHideEvent *event) override;
 
-    void resizeEvent(QResizeEvent *event) override;
-
     void syncConnectionViewState();
 
     void dragEnterEvent(QDragEnterEvent *event);
