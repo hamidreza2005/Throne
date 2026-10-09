@@ -326,7 +326,6 @@ private:
     void openTraySelector(bool routing);
     QPointer<TrayOtpCodes> trayOtpCodes;
     void openTrayOtpCodes();
-    QShortcut *shortcut_esc = new QShortcut(QKeySequence::Cancel, this);
     QThreadPool *parallelCoreCallPool = new QThreadPool(this);
     std::unique_ptr<TestRunner> testRunner;
     Configs_sys::CoreProcess *core_process = nullptr;

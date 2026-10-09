@@ -179,6 +179,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
     const QEvent::Type type = event->type();
 
+    // Accepting the override keeps any window-level Esc shortcut from taking the key first.
+    if ((type == QEvent::ShortcutOverride || type == QEvent::KeyPress) && static_cast<QKeyEvent *>(event)->key() == Qt::Key_Escape
+        && obj->isWidgetType() && ui->logToolbar->isAncestorOf(static_cast<QWidget *>(obj))) {
+        if (type == QEvent::ShortcutOverride) event->accept();
+        else logFilterButton->setChecked(false);
+        return true;
+    }
+
     if (type == QEvent::Resize && obj == ui->toolButton_program) {
         const int h = ui->toolButton_program->height();
         if (h > 0 && ui->toolButton_startstop->height() != h) {

@@ -100,11 +100,7 @@ void MainWindow::setupLogView() {
     logFilterButton->setIcon(QIcon(":/icon/filter.png"));
     logFilterButton->setCheckable(true);
     connect(logFilterButton, &QToolButton::toggled, this, &MainWindow::setLogFilterVisible);
-    auto *closeFilter = new QAction(ui->logToolbar);
-    closeFilter->setShortcut(Qt::Key_Escape);
-    closeFilter->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    ui->logToolbar->addAction(closeFilter);
-    connect(closeFilter, &QAction::triggered, logFilterButton, [this] { logFilterButton->setChecked(false); });
+    for (auto *w : ui->logToolbar->findChildren<QWidget*>()) w->installEventFilter(this);
 
     m_logSearchDebounce = new QTimer(this);
     m_logSearchDebounce->setSingleShot(true);
@@ -251,7 +247,8 @@ void MainWindow::rebuildLogView() {
 }
 
 void MainWindow::applyLogSearch() {
-    const QString text = ui->logSearchEdit->text();
+    // A hidden bar keeps its text and toggles but stops filtering.
+    const QString text = logFilterButton->isChecked() ? ui->logSearchEdit->text() : QString();
     QRegularExpression search;
     if (!text.isEmpty()) {
         search.setPattern(ui->logSearchRegex->isChecked() ? text : QRegularExpression::escape(text));
@@ -280,12 +277,7 @@ void MainWindow::applyLogSearch() {
 void MainWindow::setLogFilterVisible(bool visible) {
     ui->logToolbar->setVisible(visible);
     logFilterButton->setToolTip(visible ? tr("Disable Filter") : tr("Enable Filter"));
-    if (visible) {
-        ui->logSearchEdit->setFocus(Qt::OtherFocusReason);
-        return;
-    }
-    // A hidden bar must not keep filtering.
-    ui->logSearchEdit->clear();
+    if (visible) ui->logSearchEdit->setFocus(Qt::OtherFocusReason);
     m_logSearchDebounce->stop();
     applyLogSearch();
 }
